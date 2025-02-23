@@ -11,7 +11,7 @@ USERCONTENT_FILES += src/firefox-gnome-theme/userContent.css
 
 PREFIX ?= /usr
 DESTDIR :=
-FIREFOX_DIR := $(PREFIX)/lib/firefox
+FIREFOX_DIR := $(PREFIX)/lib/firefox-esr
 FIREFOX_CONFIG_DIR := /etc/firefox
 FIREFOX_MOBILE_CONFIG_DIR := $(PREFIX)/share/furios-firefox-tweaks
 
@@ -50,9 +50,6 @@ install: all
 	# Disable crash reporter by writing src/99-firefox-crash-reporter.sh to /etc/profile.d
 	install -Dm755 src/99-firefox-crash-reporter.sh \
 		"$(DESTDIR)/etc/profile.d/99-firefox-crash-reporter.sh"
-
-	# Install ESR -> release migration script
-	install -Dm755 src/migrate.sh "$(DESTDIR)/$(FIREFOX_MOBILE_CONFIG_DIR)/migrate.sh"
 
 	# Ensure DESTDIR is an absolute path \
 	DESTDIR=$$(realpath "$(DESTDIR)"); \
