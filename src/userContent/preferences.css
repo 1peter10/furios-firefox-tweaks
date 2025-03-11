@@ -220,7 +220,6 @@
                 margin: 0 !important;
                 transition: background-color 0.1s ease-out;
                 box-shadow: 0 0 0 1px rgba(0, 0, 0, .03), 0 1px 3px 1px rgba(0, 0, 0, .07), 0 2px 6px 2px rgba(0, 0, 0, .03);
-                clip-path: rect(0 -16px 100% 150%);
 
                 position: relative;
 
@@ -238,19 +237,23 @@
                 &:first-child, h2 + &, label + &, description + &,
                 #ctrlTabRecentlyUsedOrder + &,
                 #useAutoScroll + &,
-                &#web-appearance-chooser,
                 &#languagesBox
                 {
 					border-top-left-radius: 12px !important;
                     border-top-right-radius: 12px !important;
                     margin-top: 16px !important;
-                    clip-path: rect(-16px -16px 100% 150%);
 
                     & + div
                     {
                         margin-top: -18px !important;
-                        clip-path: rect(0 -16px 150% 150%);
                     }
+                }
+
+                &#web-appearance-chooser
+                {
+					border-top-left-radius: 12px !important;
+                    border-top-right-radius: 12px !important;
+                    margin-top: 16px !important;
                 }
 
                 &:last-child, &#enginesSuggestion, &#browserSeparateDefaultEngine
@@ -258,7 +261,6 @@
 					border-bottom-left-radius: 12px !important;
                     border-bottom-right-radius: 12px !important;
                     border-bottom: none !important;
-                    clip-path: rect(0 -16px 150% 150%);
                 }
             }
 
@@ -340,6 +342,12 @@
             {
                 display: none;
             }
+
+            & > vbox:last-of-type
+            {
+                border-bottom-left-radius: 12px;
+                border-bottom-right-radius: 12px;
+            }
         }
 
         hbox:has(> a)
@@ -387,6 +395,44 @@
             border-bottom-right-radius: 12px;
         }
 
+        #formAutofillGroupBox
+        {
+            & button.accessory-button
+            {
+                flex: 1;
+                margin-top: 12px;
+                margin-bottom: 12px;
+            }
+
+            & description
+            {
+                margin-inline-start: 0 !important;
+                text-align: center;
+            }
+        }
+
+        #creditCardAutofill
+        {
+            flex-direction: column;
+        }
+
+        #permissionsGroup hbox:has(> a)
+        {
+            flex-direction: row;
+            position: relative;
+
+            & > a
+            {
+                position: absolute;
+                top: 100%;
+            }
+        }
+
+        #dataCollectionGroup, #websiteAdvertisingGroup
+        {
+            display: none;
+        }
+
         #nonTechnicalPrivacyBox,
         #siteDataGroup > hbox
         {
@@ -397,7 +443,7 @@
         {
             align-self: start;
             width: 100%;
-            margin-top: 16px;
+            margin-top: 16px !important;
         }
 
         #masterPasswordRow + description

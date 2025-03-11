@@ -24,15 +24,21 @@
 
 if (document)
 {
-    // When the user touches the browser, get stuff out of the way
     document.addEventListener('DOMContentLoaded', () => {
         const browser = document.getElementById('browser');
         if (!browser) {
             return;
         }
-
+        
+        // When the user touches the browser, get stuff out of the way
         browser.addEventListener('touchstart', () => {
-            gURLBar.blur();
+            // We do this on a delay because if the keyboard closes too fast
+            // the tap event will actually be displaced if the keyboard disappearing
+            // causes the contents to move. This was not an issue on squeekboard,
+            // but phosh-osk-stub seems to be a lot faster at closing the keyboard.
+            setTimeout(() => {
+                gURLBar.blur();
+            }, 100);
         }, { passive: true });
 
         const titleBar = document.getElementById('titlebar');
@@ -40,6 +46,18 @@ if (document)
             titleBar.addEventListener('touchstart', () => {
                 gURLBar.blur();
             }, { passive: true });
+        }
+
+        // Disable the popover attribute on the URL bar and ensure it's
+        // position: relative so it doesn't freak out
+        const urlbar = document.getElementById('urlbar');
+        if (urlbar) {
+            // UrlbarInput.sys.mjs wants to call showPopover() on the URL bar,
+            // but that fails with an exception if we remove the attribute.
+            // So... here's some magic for ya:
+            urlbar.showPopover = function() {}; // :^)
+            urlbar.removeAttribute('popover');
+            urlbar.style.position = 'relative';
         }
     });
 }
@@ -87,20 +105,24 @@ if (document)
 // Used to fix things like Sync login, extension store, YouTube fullscreen, Google login, etc
 {
     const FIREFOX_DESKTOP_UA = "Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0";
-    const CHROME_ANDROID_UA = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.79 Mobile Safari/537.36";
+    const CHROME_ANDROID_UA = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.6943.137 Mobile Safari/537.36";
+    const FIREFOX_ANDROID_UA = "Mozilla/5.0 (Android 15; Mobile; rv:135.0) Gecko/135.0 Firefox/135.0";
     const UA_SPOOF = {
         // Fix Google login not trusting the browser
         "https?://accounts.google.com": FIREFOX_DESKTOP_UA,
-        // Fix Google Search showing up as the old layout
-        "https?://(www.)?google.*/": CHROME_ANDROID_UA,
         // Fix Sync login not completing
         "https?://accounts.firefox.com": FIREFOX_DESKTOP_UA,
         // Fix YouTube fullscreen acting weird
-        "https?://youtube.com": CHROME_ANDROID_UA,
-        "https?://m.youtube.com": CHROME_ANDROID_UA,
+        "https?://youtube.com": FIREFOX_ANDROID_UA,
+        "https?://m.youtube.com": FIREFOX_ANDROID_UA,
         // Fix Firefox extension store thinking we're on Android
         "https?://addons.mozilla.org": FIREFOX_DESKTOP_UA,
         "https?://drive.google.com": CHROME_ANDROID_UA,
+        // Fix Google Maps search bar not being interactive
+        "https?://(www.)?google.com/maps": FIREFOX_DESKTOP_UA,
+        "https?://maps.google.com": FIREFOX_DESKTOP_UA,
+        // Fix Google Search showing up as the old layout
+        "https?://(www.)?google.*/": CHROME_ANDROID_UA,
     };
 
     const requestObserver = {
