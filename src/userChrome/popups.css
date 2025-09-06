@@ -192,4 +192,5 @@ browser.webextension-popup-browser {
     width: 100% !important;
     min-width: 100% !important;
     height: 100% !important;
+    overflow-x: scroll !important;
 }
